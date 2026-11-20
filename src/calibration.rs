@@ -1,12 +1,12 @@
 // Copyright (C) 2026 Jorge Andre Castro
-// GPL-2.0-or-later
+// license  "MIT OR Apache-2.0"
 
-//! Données de calibration usine du BMP280.
+//! BMP280 factory calibration data.
 //!
-//! Chaque capteur BMP280 stocke en OTP des coefficients uniques.
-//! La compensation est OBLIGATOIRE pour obtenir des valeurs physiques.
+//! Each BMP280 sensor stores unique coefficients in OTP.
+//! Compensation is required to obtain physical values.
 
-/// Coefficients de calibration température/pression.
+/// Temperature and pressure calibration coefficients.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CalibrationData {
     pub dig_t1: u16,
@@ -24,7 +24,7 @@ pub struct CalibrationData {
 }
 
 impl CalibrationData {
-    /// Parse les 24 octets bruts depuis les registres 0x88..0x9F.
+    /// Parses the 24 raw bytes from registers 0x88..0x9F.
     pub fn from_raw(raw: &[u8; 24]) -> Self {
         Self {
             dig_t1: u16::from_le_bytes([raw[0],  raw[1]]),
@@ -42,10 +42,10 @@ impl CalibrationData {
         }
     }
 
-    /// Compensation température : algorithme Bosch officiel.
+    /// Temperature compensation using the official Bosch algorithm.
     ///
-    /// Retourne `(température en °C × 100 en i32, t_fine)`.
-    /// `t_fine` est réutilisé pour la compensation pression.
+    /// Returns `(temperature in °C × 100 as i32, t_fine)`.
+    /// `t_fine` is reused for pressure compensation.
     pub fn compensate_temperature(&self, raw_t: u32) -> (i32, i32) {
         let t1 = self.dig_t1 as i32;
         let t2 = self.dig_t2 as i32;
@@ -57,14 +57,14 @@ impl CalibrationData {
         let var2 = (((tmp * tmp) >> 12) * t3) >> 14;
 
         let t_fine = var1 + var2;
-        let temp   = (t_fine * 5 + 128) >> 8; // en centidegrés
+        let temp   = (t_fine * 5 + 128) >> 8; // in centidegrees Celsius
         (temp, t_fine)
     }
 
-    /// Compensation pression : algorithme Bosch officiel.
+    /// Pressure compensation using the official Bosch algorithm.
     ///
-    /// Retourne la pression en Pascals × 256 (format Q24.8).
-    /// Retourne `None` si la division par zéro est détectée.
+    /// Returns pressure in Pascals × 256 (Q24.8 format).
+    /// Returns `None` if a division-by-zero is detected.
     pub fn compensate_pressure(&self, raw_p: u32, t_fine: i32) -> Option<u32> {
         let adc = raw_p as i64;
 
@@ -77,7 +77,7 @@ impl CalibrationData {
         var1  = (((1_i64 << 47) + var1) * self.dig_p1 as i64) >> 33;
 
         if var1 == 0 {
-            return None; // division par zéro
+            return None; // division by zero
         }
 
         let mut p = 1_048_576_i64 - adc;

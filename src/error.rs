@@ -1,17 +1,17 @@
 // Copyright (C) 2026 Jorge Andre Castro
-// GPL-2.0-or-later
+// license "MIT OR Apache-2.0"
 
-//! Types d'erreur du driver BMP280.
+//! BMP280 driver error types.
 
-/// Erreurs possibles du driver.
+/// Possible BMP280 driver errors.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Bmp280Error<E> {
-    /// Erreur de communication I2C sous-jacente.
+    /// Underlying I2C communication error.
     I2c(E),
-    /// Le chip ID lu ne correspond pas au BMP280 (0x58 ou 0x60).
-    /// Contient l'ID inattendu reçu.
+    /// The read chip ID does not match BMP280/BME280 (0x58 or 0x60).
+    /// Contains the unexpected received ID.
     InvalidChipId(u8),
-    /// Les données de calibration lues sont invalides (ex: dig_T1 == 0).
+    /// The calibration data is invalid (for example, dig_T1 == 0).
     InvalidCalibration,
 }
 

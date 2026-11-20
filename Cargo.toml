@@ -1,18 +1,19 @@
+
 # Copyright (C) 2026 Jorge Andre Castro
-# GPL-2.0-or-later
 
 [package]
-edition      = "2024"
-name         = "embassy-bmp280"
-version      = "0.2.1"
-authors      = ["Jorge Andre Castro <georgeandrec@gmail.com>"]
-description  = "Driver async no_std pour le capteur pression/température BMP280, basé sur Embassy."
+edition       = "2024"
+name          = "embassy-bmp280"
+version       = "0.3.0"
+authors       = ["Jorge Andre Castro <georgeandrec@gmail.com>"]
+description   = "Async no_std driver for the BMP280 pressure and temperature sensor, based on Embassy."
 documentation = "https://docs.rs/embassy-bmp280"
-readme       = "README.md"
-keywords     = ["embassy", "bmp280", "pressure", "no-std", "embedded"]
-categories   = ["embedded", "no-std", "hardware-support"]
-license      = "GPL-2.0-or-later"
-repository   = "https://github.com/jorgeandrecastro/embassy-bmp280"
+readme        = "README.md"
+keywords      = ["embassy", "bmp280", "pressure", "no-std", "embedded"]
+categories    = ["embedded", "no-std", "hardware-support"]
+license       = "MIT OR Apache-2.0"
+repository    = "https://github.com/jorgeandrecastro/embassy-bmp280"
+
 build        = false
 autolib      = false
 autobins     = false
@@ -25,18 +26,52 @@ name = "embassy_bmp280"
 path = "src/lib.rs"
 
 [features]
-default = []
-# Active les méthodes de conversion f32 (temperature_celsius, pressure_hpa)
+# ARM / Cortex-M: official Embassy backend
+default = ["time-upstream", "sync-upstream"]
+time-upstream = ["dep:embassy-time"]
+sync-upstream = ["dep:embassy-sync"]
+
+# RP2350 Hazard3 RISC-V: custom Embassy fork
+time-riscv = ["dep:embassy-time-riscv", "dep:embassy-time-driver-riscv"]
+sync-riscv = ["dep:embassy-sync-riscv"]
+
+# Optional f32 conversion methods
 float = []
 
-[dependencies.embassy-sync]
-version = "0.8"
+[dependencies]
+embedded-hal-async = "1.0"
 
-[dependencies.embassy-time]
-version = "0.5"
+embassy-time = {
+    version = "0.5",
+    optional = true,
+    default-features = false
+}
 
-[dependencies.embedded-hal-async]
-version = "1.0"
+embassy-time-riscv = {
+    package = "embassy-time-riscv",
+    version = "0.1",
+    optional = true,
+    default-features = false
+}
+
+embassy-time-driver-riscv = {
+    version = "0.1",
+    optional = true,
+    default-features = false
+}
+
+embassy-sync = {
+    version = "0.8",
+    optional = true,
+    default-features = false
+}
+
+embassy-sync-riscv = {
+    package = "embassy-sync-riscv",
+    version = "0.1",
+    optional = true,
+    default-features = false
+}
 
 [profile.release]
 opt-level     = "z"
