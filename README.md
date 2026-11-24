@@ -1,8 +1,8 @@
-# embassy-bmp280
+# Hazard3-bmp280
 
-[![Crates.io](https://img.shields.io/crates/v/embassy-bmp280.svg)](https://crates.io/crates/embassy-bmp280)
-[![Documentation](https://img.shields.io/docsrs/embassy-bmp280/latest.svg)](https://docs.rs/embassy-bmp280)
-[![License](https://img.shields.io/crates/l/embassy-bmp280.svg)](LICENSE)
+[![Crates.io](https://img.shields.io/crates/v/Hazard3-bmp280.svg)](https://crates.io/crates/Hazard3-bmp280)
+[![Documentation](https://img.shields.io/docsrs/Hazard3-bmp280/latest.svg)](https://docs.rs/Hazard3-bmp280)
+[![License](https://img.shields.io/crates/l/Hazard3-bmp280.svg)](LICENSE)
 
 Async `no_std` driver for the Bosch BMP280 pressure and temperature sensor.
 
@@ -23,7 +23,7 @@ For ARM/Cortex-M targets:
 
 ```toml
 [dependencies]
-embassy-bmp280 = "0.3"
+Hazard3-bmp280 = "0.3"
 embedded-hal-async = "1.0"
 embassy-sync = "0.8"
 embassy-time = "0.5"
@@ -33,11 +33,11 @@ For the RP2350 RISC-V/Hazard3 target:
 
 ```toml
 [dependencies]
-embassy-bmp280 = { version = "0.3", default-features = false, features = ["time-riscv", "sync-riscv"] }
+Hazard3-bmp280 = { version = "0.3", default-features = false, features = ["time-riscv", "sync-riscv"] }
 embedded-hal-async = "1.0"
-embassy-sync-riscv = "0.1"
-embassy-time-riscv = "0.1"
-embassy-time-driver-riscv = "0.1"
+hazard3-sync = "0.1"
+hazard3-time = "0.1"
+hazard3-time-driver = "0.1"
 ```
 
 ---
@@ -62,7 +62,7 @@ embassy-time-driver-riscv = "0.1"
 
 ```toml
 [dependencies]
-embassy-bmp280 = "0.3"
+Hazard3-bmp280 = "0.3"
 embassy-sync = "0.8"
 embassy-time = "0.5"
 embedded-hal-async = "1.0"
@@ -72,23 +72,23 @@ embedded-hal-async = "1.0"
 
 ```toml
 [dependencies]
-embassy-bmp280 = { version = "0.3", default-features = false, features = ["time-riscv", "sync-riscv"] }
-embassy-sync-riscv = "0.1"
-embassy-time-riscv = "0.1"
-embassy-time-driver-riscv = "0.1"
+Hazard3-bmp280 = { version = "0.3", default-features = false, features = ["time-riscv", "sync-riscv"] }
+hazard3-sync = "0.1"
+hazard3-time = "0.1"
+hazard3-time-driver = "0.1"
 embedded-hal-async = "1.0"
 ```
 
 To enable `f32` conversion methods:
 
 ```toml
-embassy-bmp280 = { version = "0.3", features = ["float"] }
+Hazard3-bmp280 = { version = "0.3", features = ["float"] }
 ```
 
 For RISC-V with floating-point conversions:
 
 ```toml
-embassy-bmp280 = {
+Hazard3-bmp280 = {
     version = "0.3",
     default-features = false,
     features = ["time-riscv", "sync-riscv", "float"]
@@ -113,7 +113,7 @@ embassy-bmp280 = {
 ### Initialization
 
 ```rust
-use embassy_bmp280::{Bmp280, Bmp280Address, Bmp280Config, PowerMode};
+use Hazard3_bmp280::{Bmp280, Bmp280Address, Bmp280Config, PowerMode};
 
 // Default address
 let mut bmp =
@@ -152,7 +152,7 @@ let press_hpa = data.pressure_hpa(); // f32, for example 1013.25
 ### Custom configuration
 
 ```rust
-use embassy_bmp280::{Bmp280Config, OversamplingTemp, OversamplingPress, PowerMode};
+use Hazard3_bmp280::{Bmp280Config, OversamplingTemp, OversamplingPress, PowerMode};
 
 let config = Bmp280Config {
     temp_os: OversamplingTemp::X4,
@@ -196,7 +196,7 @@ bmp.set_mode(PowerMode::Normal).await?;
 ### Error handling
 
 ```rust
-use embassy_bmp280::Bmp280Error;
+use Hazard3_bmp280::Bmp280Error;
 
 match Bmp280::new(i2c, Bmp280Address::Default, Bmp280Config::default()).await {
     Ok(bmp) => {
@@ -227,7 +227,7 @@ match Bmp280::new(i2c, Bmp280Address::Default, Bmp280Config::default()).await {
 `BMP280_SIGNAL` allows the latest measurement to be shared between tasks without explicit shared memory.
 
 ```rust
-use embassy_bmp280::signals::BMP280_SIGNAL;
+use Hazard3_bmp280::signals::BMP280_SIGNAL;
 
 // Producer task
 BMP280_SIGNAL.signal(data);
@@ -247,7 +247,7 @@ async fn logger_task() {
 ## Project architecture
 
 ```text
-embassy-bmp280/
+Hazard3-bmp280/
 ├── Cargo.toml
 └── src/
     ├── lib.rs           ← Main driver and public types
